@@ -1,5 +1,20 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
 import { InjectSupabase, SupabaseCli } from './supabase.provider';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { Express } from 'express';
+
+interface UploadedFile {
+  originalname: string;
+  buffer: Buffer;
+  mimetype: string;
+}
 
 @Controller('supabase-client')
 export class SupabaseClientController {
@@ -20,29 +35,36 @@ export class SupabaseClientController {
     return { success: true, data };
   }
 
-  @Post('insert-file')
-  async insertProfile(
-    @Body() profileData: { fileName: string; image: File | Buffer },
-  ) {
+  @Post('upload-file')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadFile(@UploadedFile() file: UploadedFile) {
     try {
-      const { fileName, image } = profileData;
+      console.log('Received file:', file);
 
-      const { data: imageData, error: uploadError } =
-        await this.supabaseClient.storage
-          .from('demo-storage')
-          .upload(fileName, image);
+      // Nombre del archivo (puedes modificarlo para hacerlo único)
+      const fileName = `${Date.now()}-${file.originalname}`;
 
-      if (uploadError) {
-        console.log('SupabaseError uploading: ', uploadError);
-        return { success: false, error: uploadError };
+      const { data, error } = await this.supabaseClient.storage
+        .from('medical-files') // Tu bucket
+        .upload(fileName, file.buffer, {
+          contentType: file.mimetype,
+          upsert: false, // Cambia a true si deseas reemplazar archivos con el mismo nombre
+        });
+
+      if (error) {
+        console.error('Error uploading:', error);
+        return { success: false, error };
       }
 
-      if (imageData) {
-        console.log(imageData);
-        return { success: true, data: imageData };
-      }
+      return {
+        success: true,
+        data,
+        publicUrl: this.supabaseClient.storage
+          .from('medical-files')
+          .getPublicUrl(fileName).data.publicUrl,
+      };
     } catch (error) {
-      console.log('Caught an error: ', error);
+      console.error('Caught an error:', error);
       return { success: false, error };
     }
   }
