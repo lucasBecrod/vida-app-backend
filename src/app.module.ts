@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from './datasource/typeorm.module';
+import { SupabaseClientModule } from './supabase-client/supabase-client.module';
 
 @Module({
   imports: [
@@ -11,6 +12,7 @@ import { TypeOrmModule } from './datasource/typeorm.module';
       envFilePath: '.env',
     }),
     TypeOrmModule,
+    SupabaseClientModule,
   ],
   controllers: [AppController],
   providers: [AppService],
