@@ -25,14 +25,49 @@ export class SupabaseClientController {
   async testConnection() {
     const { data, error } = await this.supabaseClient
       .from('profiles')
-      .select('*')
-      .limit(1);
+      .select('*');
 
     if (error) {
       return { success: false, error };
     }
 
     return { success: true, data };
+  }
+
+  @Get('get-file-url/')
+  async getFileUrl(@Body('fileName') fileName: string) {
+    try {
+      const { data } = await this.supabaseClient.storage
+        .from('medical-files')
+        .getPublicUrl(fileName);
+
+      if (!data.publicUrl) {
+        return { success: false, error: 'Failed to get storage URL' };
+      }
+
+      return { success: true, publicUrl: data.publicUrl };
+    } catch (error) {
+      console.error('Error getting file URL:', error);
+      return { success: false, error };
+    }
+  }
+
+  @Get('get-files/')
+  async getFiles() {
+    try {
+      const { data } = await this.supabaseClient.storage
+        .from('medical-files')
+        .list('uploads');
+
+      if (!data) {
+        return { success: false, error: 'Failed to get storage URL' };
+      }
+
+      return { success: true, publicUrl: data };
+    } catch (error) {
+      console.error('Error getting file URL:', error);
+      return { success: false, error };
+    }
   }
 
   @Post('upload-file')

@@ -1,33 +1,5 @@
-import { ChatGoogleGenerativeAI } from '@langchain/google-genai';
-import { SupabaseClient } from '@supabase/supabase-js';
+/* import { SupabaseClient } from '@supabase/supabase-js';
 import { assert } from 'convex-helpers';
-
-const AI_MODEL = new ChatGoogleGenerativeAI({
-  model: 'gemini-pro', // o "gemini-1.5-pro"
-  maxOutputTokens: 2048,
-  temperature: 0.4,
-  apiKey: process.env.GOOGLE_API_KEY!,
-});
-
-const SUPPORTED_IMAGE_TYPES = [
-  'image/jpeg',
-  'image/png',
-  'image/webp',
-  'image/gif',
-] as const;
-
-const SYSTEM_PROMPTS = {
-  image:
-    'You turn images into text. If it is a photo of a document, transcribe it. If it is not a document, describe it.',
-  pdf: 'You transform PDF files into text.',
-  html: 'You transform content into markdown.',
-};
-
-export type ExtractTextContentArgs = {
-  filePath: string;
-  filename: string;
-  fileType: string;
-};
 
 // 👇 Función principal
 export async function extractTextContent(
@@ -43,10 +15,10 @@ export async function extractTextContent(
 
   const mimeType = fileType.toLowerCase();
 
-  /*   // 🖼 Imagen
+    // 🖼 Imagen
   if (SUPPORTED_IMAGE_TYPES.includes(mimeType as any)) {
     return extractImageText(url);
-  } */
+  }
 
   // 📄 PDF
   if (mimeType.includes('pdf')) {
@@ -114,7 +86,7 @@ async function extractPdfText(
     : response.content.toString();
 }
 
-/* // 🖼 Extracción desde imagen
+// 🖼 Extracción desde imagen
 async function extractImageText(url: string): Promise<string> {
   const response = await AI_MODEL.call([
     { role: 'system', content: SYSTEM_PROMPTS.image },
@@ -125,4 +97,5 @@ async function extractImageText(url: string): Promise<string> {
   ]);
 
   return response.content;
-} */
+}
+ */
