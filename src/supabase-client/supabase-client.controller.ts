@@ -58,10 +58,10 @@ export class SupabaseClientController {
 
       return {
         success: true,
-        data,
-        publicUrl: this.supabaseClient.storage
-          .from('medical-files')
-          .getPublicUrl(fileName).data.publicUrl,
+        storageId: data.id,
+        filename: fileName,
+        bytes: file.buffer.length,
+        mimeType: file.mimetype,
       };
     } catch (error) {
       console.error('Caught an error:', error);

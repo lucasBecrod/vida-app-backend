@@ -4,6 +4,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from './datasource/typeorm.module';
 import { SupabaseClientModule } from './supabase-client/supabase-client.module';
+import { FileProcessingModuleModule } from './file-processing-module/file-processing-module.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { SupabaseClientModule } from './supabase-client/supabase-client.module';
     }),
     TypeOrmModule,
     SupabaseClientModule,
+    FileProcessingModuleModule,
   ],
   controllers: [AppController],
   providers: [AppService],
