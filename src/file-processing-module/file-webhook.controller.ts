@@ -12,8 +12,6 @@ export class FileWebhookController {
   async handleFileUploaded(
     @Body() body: { path: string; fileType: string; fileName: string },
   ) {
-    // 🚨 Importante: Validar secreto del webhook
-    // if (body.secret !== process.env.WEBHOOK_SECRET) throw new UnauthorizedException();
 
     try {
       const data = await this.fileProcessingService.extractTextContent({
